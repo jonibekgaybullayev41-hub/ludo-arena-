@@ -52,3 +52,27 @@ function rollDice() {
   document.getElementById("player").textContent =
     players[currentPlayer] + " navbati";
 }
+// LUDO ARENA - 16 ta o'yin donasi
+
+const tokenColors = [
+  "red", "green", "yellow", "blue"
+];
+
+const tokens = [];
+
+tokenColors.forEach(color => {
+  for (let i = 0; i < 4; i++) {
+    const token = document.createElement("div");
+
+    token.className = "token " + color;
+    token.textContent = "●";
+
+    token.style.fontSize = "23px";
+    token.style.fontWeight = "bold";
+    token.style.position = "absolute";
+
+    tokens.push(token);
+  }
+});
+
+console.log("16 ta o'yin donasi tayyor!");
