@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +9,45 @@
 </head>
 <body>
 
-  <h1>🎲 LUDO ARENA</h1>
-  <p id="player">Qizil navbati</p>
+  <h1 id="gameTitle">🎲 LUDO ARENA</h1>
+
+  <div class="language-menu">
+    <label id="languageLabel" for="languageSelect">
+      🌍 Language:
+    </label>
+
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="en">🇬🇧 English</option>
+      <option value="uz">🇺🇿 O‘zbekcha</option>
+      <option value="ru">🇷🇺 Русский</option>
+      <option value="tr">🇹🇷 Türkçe</option>
+      <option value="ar">🇸🇦 العربية</option>
+      <option value="hi">🇮🇳 हिन्दी</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="zh">🇨🇳 中文</option>
+    </select>
+  </div>
+
+  <p id="welcome">Welcome to Ludo Arena!</p>
+
+  <p id="player">Red player's turn</p>
 
   <div id="board"></div>
 
   <div id="dice">🎲</div>
 
-  <button onclick="rollDice()">ZAR TASHLASH</button>
-<button onclick="moveSelectedToken()">
-  DONANI YURITISH
-</button>
+  <button id="rollButton" onclick="rollDice()">
+    ROLL DICE
+  </button>
+
+  <button id="moveButton" onclick="moveSelectedToken()">
+    MOVE TOKEN
+  </button>
+
+  <script src="translations.js"></script>
   <script src="script.js"></script>
+
 </body>
 </html>
