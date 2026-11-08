@@ -8,7 +8,6 @@ const dice = document.getElementById("dice");
 const playerText = document.getElementById("player");
 
 const tokenColors = ["red", "green", "yellow", "blue"];
-
 const players = ["Qizil", "Yashil", "Sariq", "Ko‘k"];
 
 let currentPlayer = 0;
@@ -29,10 +28,7 @@ const tokenElements = {
   blue: []
 };
 
-// =================================
 // BOARD
-// =================================
-
 const homes = [
   { color: "red", r: [0, 5], c: [0, 5] },
   { color: "green", r: [0, 5], c: [9, 14] },
@@ -48,10 +44,8 @@ for (let r = 0; r < 15; r++) {
     cell.className = "cell";
 
     const home = homes.find(h =>
-      r >= h.r[0] &&
-      r <= h.r[1] &&
-      c >= h.c[0] &&
-      c <= h.c[1]
+      r >= h.r[0] && r <= h.r[1] &&
+      c >= h.c[0] && c <= h.c[1]
     );
 
     if (home) {
@@ -67,11 +61,7 @@ for (let r = 0; r < 15; r++) {
   }
 }
 
-// =================================
-// TOKEN CREATION
-// =================================
-
-// LUDO MOVEMENT PATH
+// MOVEMENT PATH
 const gamePath = [
   [6,1],[6,2],[6,3],[6,4],[6,5],
   [5,6],[4,6],[3,6],[2,6],[1,6],
@@ -101,13 +91,13 @@ const homePositions = {
   blue: [10, 10]
 };
 
+// CREATE TOKENS
 tokenColors.forEach(color => {
   for (let i = 0; i < 4; i++) {
     const token = document.createElement("div");
 
     token.className = "token " + color;
     token.textContent = "●";
-
     token.style.fontSize = "23px";
     token.style.cursor = "pointer";
 
@@ -122,18 +112,19 @@ tokenColors.forEach(color => {
       col + (i % 2) * 2;
 
     board.children[cellIndex].appendChild(token);
-
     tokenElements[color].push(token);
   }
 });
 
-// =================================
 // SELECT TOKEN
-// =================================
-
 function selectToken(color, index, token) {
   if (tokenColors[currentPlayer] !== color) {
     alert("Hozir " + players[currentPlayer] + " navbati!");
+    return;
+  }
+
+  if (diceNumber === 0) {
+    alert("Avval zar tashlang!");
     return;
   }
 
@@ -142,18 +133,15 @@ function selectToken(color, index, token) {
   }
 
   selectedToken = {
-    color: color,
-    index: index,
+    color,
+    index,
     element: token
   };
 
   token.style.outline = "3px solid white";
 }
 
-// =================================
 // ROLL DICE
-// =================================
-
 function rollDice() {
   if (diceNumber !== 0) {
     alert("Avval donani yurgizing!");
@@ -161,21 +149,24 @@ function rollDice() {
   }
 
   diceNumber = Math.floor(Math.random() * 6) + 1;
-
   dice.textContent = "🎲 " + diceNumber;
 
-  alert("Zar natijasi: " + diceNumber);
+  playerText.textContent =
+    players[currentPlayer] + " navbati";
 
-  if (diceNumber !== 6) {
-    playerText.textContent =
-      players[currentPlayer] + " navbati";
+  const color = tokenColors[currentPlayer];
+
+  const canMove = playerPositions[color].some(
+    position => position !== -1 || diceNumber === 6
+  );
+
+  if (!canMove) {
+    alert("Bu safar yurish mumkin emas!");
+    finishTurn();
   }
 }
 
-// =================================
 // MOVE TOKEN
-// =================================
-
 function moveSelectedToken() {
   if (!selectedToken) {
     alert("Avval donani tanlang!");
@@ -189,40 +180,46 @@ function moveSelectedToken() {
 
   const color = selectedToken.color;
   const index = selectedToken.index;
+  const token = selectedToken.element;
 
-  if (
-    playerPositions[color][index] === -1 &&
-    diceNumber !== 6
-  ) {
-    alert("Donani uyidan chiqarish uchun 6 kerak!");
-
-    finishTurn();
+  if (color !== tokenColors[currentPlayer]) {
     return;
   }
 
-  if (playerPositions[color][index] === -1) {
-    playerPositions[color][index] = 0;
+  let position = playerPositions[color][index];
+
+  if (position === -1) {
+    if (diceNumber !== 6) {
+      alert("Donani chiqarish uchun 6 kerak!");
+      return;
+    }
+    position = 0;
   } else {
-    playerPositions[color][index] += diceNumber;
+    position += diceNumber;
   }
 
-  alert(
-    players[currentPlayer] +
-    " donasining yurish holati yangilandi!"
-  );
+  position = position % gamePath.length;
+  playerPositions[color][index] = position;
 
-  selectedToken.element.style.outline = "none";
+  const pathIndex =
+    (startOffsets[color] + position) % gamePath.length;
+
+  const [row, col] = gamePath[pathIndex];
+  const cellIndex = row * 15 + col;
+
+  board.children[cellIndex].appendChild(token);
+
+  token.style.outline = "none";
   selectedToken = null;
 
   finishTurn();
 }
 
-// =================================
 // PLAYER TURN
-// =================================
-
 function finishTurn() {
-  if (diceNumber !== 6) {
+  const rolledSix = diceNumber === 6;
+
+  if (!rolledSix) {
     currentPlayer = (currentPlayer + 1) % 4;
   }
 
