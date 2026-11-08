@@ -51,3 +51,11 @@ button {
   font-size: 18px;
   font-weight: bold;
 }
+.token {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
