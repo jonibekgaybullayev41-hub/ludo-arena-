@@ -1,11 +1,14 @@
 
-// LUDO ARENA - BASIC GAME ENGINE
+// =================================
+// LUDO ARENA - GAME ENGINE
+// =================================
 
 const board = document.getElementById("board");
 const dice = document.getElementById("dice");
 const playerText = document.getElementById("player");
 
 const tokenColors = ["red", "green", "yellow", "blue"];
+
 const players = ["Qizil", "Yashil", "Sariq", "Ko‘k"];
 
 let currentPlayer = 0;
@@ -13,11 +16,22 @@ let diceNumber = 0;
 let selectedToken = null;
 
 const playerPositions = {
-  red: -1,
-  green: -1,
-  yellow: -1,
-  blue: -1
+  red: [-1, -1, -1, -1],
+  green: [-1, -1, -1, -1],
+  yellow: [-1, -1, -1, -1],
+  blue: [-1, -1, -1, -1]
 };
+
+const tokenElements = {
+  red: [],
+  green: [],
+  yellow: [],
+  blue: []
+};
+
+// =================================
+// BOARD
+// =================================
 
 const homes = [
   { color: "red", r: [0, 5], c: [0, 5] },
@@ -26,15 +40,18 @@ const homes = [
   { color: "blue", r: [9, 14], c: [9, 14] }
 ];
 
-// TAHTA YARATISH
+board.innerHTML = "";
+
 for (let r = 0; r < 15; r++) {
   for (let c = 0; c < 15; c++) {
     const cell = document.createElement("div");
     cell.className = "cell";
 
     const home = homes.find(h =>
-      r >= h.r[0] && r <= h.r[1] &&
-      c >= h.c[0] && c <= h.c[1]
+      r >= h.r[0] &&
+      r <= h.r[1] &&
+      c >= h.c[0] &&
+      c <= h.c[1]
     );
 
     if (home) {
@@ -50,10 +67,11 @@ for (let r = 0; r < 15; r++) {
   }
 }
 
-// 16 TA DONA YARATISH
-const tokens = [];
+// =================================
+// TOKEN CREATION
+// =================================
 
-const positions = {
+const homePositions = {
   red: [1, 1],
   green: [1, 10],
   yellow: [10, 1],
@@ -67,46 +85,74 @@ tokenColors.forEach(color => {
     token.className = "token " + color;
     token.textContent = "●";
 
+    token.style.fontSize = "23px";
+    token.style.cursor = "pointer";
+
     token.addEventListener("click", () => {
-      if (tokenColors[currentPlayer] !== color) {
-        alert("Hozir " + players[currentPlayer] + " navbati!");
-        return;
-      }
-
-      if (selectedToken) {
-        selectedToken.style.outline = "none";
-      }
-
-      selectedToken = token;
-      token.style.outline = "3px solid white";
+      selectToken(color, i, token);
     });
 
-    const [row, col] = positions[color];
+    const [row, col] = homePositions[color];
+
     const cellIndex =
       (row + Math.floor(i / 2) * 2) * 15 +
       col + (i % 2) * 2;
 
     board.children[cellIndex].appendChild(token);
-    tokens.push(token);
+
+    tokenElements[color].push(token);
   }
 });
 
-// ZAR TASHLASH
+// =================================
+// SELECT TOKEN
+// =================================
+
+function selectToken(color, index, token) {
+  if (tokenColors[currentPlayer] !== color) {
+    alert("Hozir " + players[currentPlayer] + " navbati!");
+    return;
+  }
+
+  if (selectedToken) {
+    selectedToken.element.style.outline = "none";
+  }
+
+  selectedToken = {
+    color: color,
+    index: index,
+    element: token
+  };
+
+  token.style.outline = "3px solid white";
+}
+
+// =================================
+// ROLL DICE
+// =================================
+
 function rollDice() {
   if (diceNumber !== 0) {
-    alert("Avval oldingi yurishni bajaring!");
+    alert("Avval donani yurgizing!");
     return;
   }
 
   diceNumber = Math.floor(Math.random() * 6) + 1;
+
   dice.textContent = "🎲 " + diceNumber;
 
-  if (diceNumber === 6) {
-    alert("6 tushdi! Donangizni tanlang.");
+  alert("Zar natijasi: " + diceNumber);
+
+  if (diceNumber !== 6) {
+    playerText.textContent =
+      players[currentPlayer] + " navbati";
   }
 }
 
-// DONA YURITISH
+// =================================
+// MOVE TOKEN
+// =================================
+
 function moveSelectedToken() {
   if (!selectedToken) {
     alert("Avval donani tanlang!");
@@ -118,30 +164,41 @@ function moveSelectedToken() {
     return;
   }
 
-  const color = tokenColors.find(c =>
-    selectedToken.classList.contains(c)
-  );
+  const color = selectedToken.color;
+  const index = selectedToken.index;
 
-  if (playerPositions[color] === -1 && diceNumber !== 6) {
+  if (
+    playerPositions[color][index] === -1 &&
+    diceNumber !== 6
+  ) {
     alert("Donani uyidan chiqarish uchun 6 kerak!");
 
-    diceNumber = 0;
-    currentPlayer = (currentPlayer + 1) % 4;
-    updatePlayer();
+    finishTurn();
     return;
   }
 
-  if (playerPositions[color] === -1) {
-    playerPositions[color] = 0;
+  if (playerPositions[color][index] === -1) {
+    playerPositions[color][index] = 0;
   } else {
-    playerPositions[color] += diceNumber;
+    playerPositions[color][index] += diceNumber;
   }
 
-  alert("Dona yurish holati yangilandi!");
+  alert(
+    players[currentPlayer] +
+    " donasining yurish holati yangilandi!"
+  );
 
-  selectedToken.style.outline = "none";
+  selectedToken.element.style.outline = "none";
   selectedToken = null;
 
+  finishTurn();
+}
+
+// =================================
+// PLAYER TURN
+// =================================
+
+function finishTurn() {
   if (diceNumber !== 6) {
     currentPlayer = (currentPlayer + 1) % 4;
   }
@@ -152,11 +209,11 @@ function moveSelectedToken() {
   updatePlayer();
 }
 
-// NAVBATNI YANGILASH
 function updatePlayer() {
   playerText.textContent =
     players[currentPlayer] + " navbati";
 }
 
 updatePlayer();
-console.log("Ludo Arena ishga tayyor!");
+
+console.log("LUDO ARENA GAME ENGINE READY!");
