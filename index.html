@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ludo Arena</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #101827;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+h1 { color: #ffd43b; margin-top: 30px; }
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: min(94vw, 420px);
+  aspect-ratio: 1;
+  margin: 25px auto;
+  border: 5px solid white;
+  background: white;
+  gap: 3px;
+}
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+}
+.red { background: #ed4242; }
+.green { background: #26b96b; }
+.yellow { background: #f5d442; }
+.blue { background: #3988ed; }
+.center {
+  background: #eee;
+  color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+button {
+  background: #ffd43b;
+  border: 0;
+  border-radius: 12px;
+  padding: 15px 30px;
+  font-size: 19px;
+  font-weight: bold;
+}
+#dice { font-size: 35px; margin: 15px; }
+</style>
+</head>
+<body>
+<h1>🎲 LUDO ARENA</h1>
+<p>O‘yinga xush kelibsiz!</p>
+
+<div class="board">
+  <div class="home red">🔴</div>
+  <div class="home green">🟢</div>
+  <div class="home blue">🔵</div>
+  <div class="home yellow">🟡</div>
+  <div class="center">LUDO</div>
+  <div class="home green">🟢</div>
+  <div class="home blue">🔵</div>
+  <div class="home yellow">🟡</div>
+  <div class="home red">🔴</div>
+</div>
+
+<div id="dice">🎲</div>
+<button onclick="rollDice()">ZAR TASHLASH</button>
+
+<script>
+function rollDice() {
+  let number = Math.floor(Math.random() * 6) + 1;
+  document.getElementById("dice").textContent = "🎲 " + number;
+}
+</script>
+</body>
+</html>
