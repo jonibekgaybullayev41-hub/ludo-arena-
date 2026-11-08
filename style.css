@@ -70,3 +70,11 @@ button {
   font-size: 23px;
   cursor: pointer;
 }
+button {
+  margin: 8px;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.96);
+}
