@@ -1,65 +1,22 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ludo Arena</title>
-<style>
-body {
- background:#101827;color:white;
- font-family:Arial;text-align:center;
-}
-h1 {color:#ffd43b}
-#board {
- width:min(94vw,450px);
- aspect-ratio:1;
- margin:20px auto;
- display:grid;
- grid-template-columns:repeat(15,1fr);
- grid-template-rows:repeat(15,1fr);
- background:white;gap:1px;
-}
-.cell {background:#eee;}
-.red {background:#ed4242}
-.green {background:#26b96b}
-.blue {background:#3988ed}
-.yellow {background:#f5d442}
-.center {
- background:conic-gradient(#ed4242 0 25%,#26b96b 0 50%,#3988ed 0 75%,#f5d442 0);
-}
-button {
- padding:15px 25px;border:0;
- border-radius:12px;background:#ffd43b;
- font-size:18px;font-weight:bold;
-}
-#dice {font-size:35px;margin:15px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ludo Arena</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>🎲 LUDO ARENA</h1>
-<p>2–4 O‘yinchi</p>
-<div id="board"></div>
-<div id="dice">🎲</div>
-<button onclick="roll()">ZAR TASHLASH</button>
 
-<script>
-const board=document.getElementById("board");
-for(let r=0;r<15;r++){
- for(let c=0;c<15;c++){
-  let cell=document.createElement("div");
-  cell.className="cell";
-  if(r<6&&c<6)cell.classList.add("red");
-  else if(r<6&&c>8)cell.classList.add("green");
-  else if(r>8&&c<6)cell.classList.add("yellow");
-  else if(r>8&&c>8)cell.classList.add("blue");
-  else if(r>=6&&r<=8&&c>=6&&c<=8)cell.classList.add("center");
-  board.appendChild(cell);
- }
-}
-function roll(){
- document.getElementById("dice").textContent=
- "🎲 "+(Math.floor(Math.random()*6)+1);
-}
-</script>
+  <h1>🎲 LUDO ARENA</h1>
+  <p id="player">Qizil navbati</p>
+
+  <div id="board"></div>
+
+  <div id="dice">🎲</div>
+
+  <button onclick="rollDice()">ZAR TASHLASH</button>
+
+  <script src="script.js"></script>
 </body>
 </html>
