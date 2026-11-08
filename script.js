@@ -1,35 +1,54 @@
-// LUDO ARENA - Game Engine
+// LUDO ARENA - Board
 
-let diceNumber = 0;
+const board = document.getElementById("board");
+
+const homes = [
+  { color: "red", r: [0, 5], c: [0, 5] },
+  { color: "green", r: [0, 5], c: [9, 14] },
+  { color: "yellow", r: [9, 14], c: [0, 5] },
+  { color: "blue", r: [9, 14], c: [9, 14] }
+];
+
+for (let r = 0; r < 15; r++) {
+  for (let c = 0; c < 15; c++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+
+    const home = homes.find(h =>
+      r >= h.r[0] && r <= h.r[1] &&
+      c >= h.c[0] && c <= h.c[1]
+    );
+
+    if (home) {
+      cell.classList.add(home.color);
+    } else if (
+      r >= 6 && r <= 8 &&
+      c >= 6 && c <= 8
+    ) {
+      cell.classList.add("center");
+    }
+
+    board.appendChild(cell);
+  }
+}
+
+// Zar tashlash
 let currentPlayer = 0;
 
 const players = [
-  { name: "Qizil", color: "red" },
-  { name: "Yashil", color: "green" },
-  { name: "Sariq", color: "yellow" },
-  { name: "Ko‘k", color: "blue" }
+  "Qizil", "Yashil", "Sariq", "Ko‘k"
 ];
 
 function rollDice() {
-  diceNumber = Math.floor(Math.random() * 6) + 1;
+  const number = Math.floor(Math.random() * 6) + 1;
 
-  const dice = document.getElementById("dice");
-  dice.textContent = "🎲 " + diceNumber;
+  document.getElementById("dice").textContent =
+    "🎲 " + number;
 
-  if (diceNumber !== 6) {
-    nextPlayer();
+  if (number !== 6) {
+    currentPlayer = (currentPlayer + 1) % 4;
   }
 
-  return diceNumber;
-}
-
-function nextPlayer() {
-  currentPlayer = (currentPlayer + 1) % players.length;
-
-  const player = players[currentPlayer];
-
-  const info = document.getElementById("player");
-  if (info) {
-    info.textContent = player.name + " navbati";
-  }
+  document.getElementById("player").textContent =
+    players[currentPlayer] + " navbati";
 }
