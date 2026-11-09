@@ -132,12 +132,7 @@ function selectToken(color, index, token) {
     selectedToken.element.style.outline = "none";
   }
 
-  selectedToken = {
-    color,
-    index,
-    element: token
-  };
-
+  selectedToken = { color, index, element: token };
   token.style.outline = "3px solid white";
 }
 
@@ -151,8 +146,7 @@ function rollDice() {
   diceNumber = Math.floor(Math.random() * 6) + 1;
   dice.textContent = "🎲 " + diceNumber;
 
-  playerText.textContent =
-    players[currentPlayer] + " navbati";
+  updatePlayer();
 
   const color = tokenColors[currentPlayer];
 
@@ -224,11 +218,13 @@ function finishTurn() {
   }
 
   diceNumber = 0;
+  selectedToken = null;
   dice.textContent = "🎲";
 
   updatePlayer();
 }
 
+// UPDATE PLAYER
 function updatePlayer() {
   playerText.textContent =
     players[currentPlayer] + " navbati";
